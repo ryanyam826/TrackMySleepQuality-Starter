@@ -32,7 +32,8 @@ import java.util.concurrent.TimeUnit
 /**
  * These functions create a formatted string that can be set in a TextView.
  */
-
+private val ONE_MINUTE_MILLIS = TimeUnit.MILLISECONDS.convert(1,TimeUnit.MINUTES)
+private val ONE_HOUR_MILLIS = TimeUnit.MILLISECONDS.convert(1,TimeUnit.HOURS)
 /**
  * Returns a string representing the numeric quality rating.
  */
@@ -67,7 +68,6 @@ fun convertNumericQualityToString(quality: Int, resources: Resources): String {
     }
     return qualityString
 }
-
 
 /**
  * Take the Long milliseconds returned by the system and stored in Room,
@@ -123,7 +123,8 @@ fun formatNights(nights: List<SleepNight>, resources: Resources): Spanned {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         return Html.fromHtml(sb.toString(), Html.FROM_HTML_MODE_LEGACY)
     } else {
-        return HtmlCompat.fromHtml(sb.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
+        @Suppress("DEPRECATION")
+        return Html.fromHtml(sb.toString())
     }
 }
 class TextItemViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)

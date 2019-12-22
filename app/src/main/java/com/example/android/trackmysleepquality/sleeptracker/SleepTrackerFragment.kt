@@ -67,17 +67,7 @@ class SleepTrackerFragment : Fragment() {
 
         binding.setLifecycleOwner(this)
 
-        sleepTrackerViewModel.navigateToSleepQuality.observe(this, Observer {
-            night ->
-            night?.let {
-                this.findNavController().navigate(
-                        SleepTrackerFragmentDirections.actionSleepTrackerFragmentToSleepQualityFragment(night.nightId)
-                )
 
-                sleepTrackerViewModel.doneNavigating()
-
-            }
-        })
 
         sleepTrackerViewModel.showSnackbarEvent.observe(this, Observer {
             if(it == true){
@@ -87,6 +77,18 @@ class SleepTrackerFragment : Fragment() {
                         Snackbar.LENGTH_SHORT
                 ).show()
                 sleepTrackerViewModel.doneShowingSnackbar()
+            }
+        })
+
+        sleepTrackerViewModel.navigateToSleepQuality.observe(this, Observer {
+            night ->
+            night?.let {
+                this.findNavController().navigate(
+                        SleepTrackerFragmentDirections.actionSleepTrackerFragmentToSleepQualityFragment(night.nightId)
+                )
+
+                sleepTrackerViewModel.doneNavigating()
+
             }
         })
 

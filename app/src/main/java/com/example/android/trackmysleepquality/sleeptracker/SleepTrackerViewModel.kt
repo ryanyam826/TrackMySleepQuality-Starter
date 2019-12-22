@@ -19,21 +19,20 @@ package com.example.android.trackmysleepquality.sleeptracker
 import android.app.Application
 import android.provider.SyncStateContract.Helpers.insert
 import android.provider.SyncStateContract.Helpers.update
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.formatNights
 import kotlinx.coroutines.*
+import javax.sql.DataSource
 
 /**
  * ViewModel for SleepTrackerFragment.
  */
 class SleepTrackerViewModel(
-        val database: SleepDatabaseDao,
-        application: Application) : AndroidViewModel(application) {
+        dataSource: SleepDatabaseDao,
+        application: Application) : ViewModel() {
+    val database = dataSource
 
     private  var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
@@ -42,6 +41,7 @@ class SleepTrackerViewModel(
     val nightsString = Transformations.map(nights){nights ->
         formatNights(nights,application.resources)
     }
+
 
 
 
@@ -93,7 +93,7 @@ class SleepTrackerViewModel(
         viewModelJob.cancel()
     }
 
-    fun onStartTracking(){
+    fun onStart(){
 
         uiScope.launch {
             val newNight = SleepNight()
@@ -108,7 +108,7 @@ class SleepTrackerViewModel(
         }
     }
 
-    fun onStopTacking(){
+    fun onStop(){
         uiScope.launch {
             val oldNight = tonight.value ?: return@launch
             oldNight.endTimeMilli = System.currentTimeMillis()
@@ -142,7 +142,7 @@ class SleepTrackerViewModel(
     }
 
     fun doneShowingSnackbar(){
-        _showSnackbarEvent.value = false
+        _showSnackbarEvent.value = null
     }
 }
 
